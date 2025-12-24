@@ -14,6 +14,8 @@ export const maxDuration = 30;
 export type ChatTools = typeof localTools;
 
 const RequestBodySchema = z.object({
+  title: z.optional(z.string()),
+  id: z.string(),
   messages: z.array(z.unknown()),
   model: z.string(),
   deepresearch: z.boolean().optional(),
@@ -53,7 +55,7 @@ export async function POST(req: Request) {
     system: systemPrompt,
     tools,
     stopWhen: stepCountIs(20),
-    maxOutputTokens: 4000,
+    // maxOutputTokens: 4000,
     onError: (err) => {
       console.error("streamText error:", err);
     },
@@ -62,7 +64,12 @@ export async function POST(req: Request) {
   return result.toUIMessageStreamResponse({
     messageMetadata: ({ part }) => {
       if (part.type === "finish") {
-        return { stats: part.totalUsage, model: model };
+        // TODO: add the message to the database
+        return {
+          stats: part.totalUsage,
+          reason: part.finishReason,
+          model: model,
+        };
       }
     },
   });

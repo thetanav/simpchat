@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Conversation,
   ConversationContent,
@@ -10,9 +11,7 @@ import {
   Message,
   MessageContent,
   MessageActions,
-  AssistantMessageDelete,
 } from "@/components/ai-elements/message";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat, type UIMessage } from "@ai-sdk/react";
 import { Response } from "@/components/ai-elements/response";
 import Image from "next/image";
@@ -25,80 +24,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 
-import {
-  Reasoning,
-  ReasoningTrigger,
-  ReasoningContent,
-} from "@/components/ai-elements/reasoning";
+import { Reasoning } from "@/components/ai-elements/reasoning";
 import { Loader } from "@/components/ai-elements/loader";
 import { models } from "@/lib/models";
-import { Tool, ToolHeader } from "@/components/ai-elements/tool";
+import { Tool } from "@/components/ai-elements/tool";
 import { DynamicToolUIPart } from "ai";
 import { toast } from "sonner";
-import { BoxIcon, GlobeIcon, LoaderCircleIcon, SmileIcon } from "lucide-react";
+import { BoxIcon, GlobeIcon, SmileIcon } from "lucide-react";
 import Navbar from "@/components/navbar";
 import AIInput from "@/components/ai-input";
 import { PromptInputMessage } from "@/components/ai-elements/prompt-input";
 import { useSession } from "@/lib/auth-client";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import Shimmer from "@/components/ai-elements/shimmer";
-
-const convertMessagesToMarkdown = (messages: UIMessage[]) => {
-  let md = "# Chat Export\n\n";
-  messages.forEach((message) => {
-    const role = message.role === "user" ? "User" : "Assistant";
-    md += `## ${role}\n\n`;
-
-    message.parts.forEach((part) => {
-      if (part.type === "text") {
-        md += `${part.text}\n\n`;
-      } else if (part.type === "reasoning") {
-        md += `**Reasoning:**\n\n${part.text}\n\n`;
-      } else if (
-        part.type.startsWith("tool-") ||
-        part.type === "dynamic-tool"
-      ) {
-        const toolType = part.type.replace("tool-", "");
-        md += `**Tool: ${toolType}**\n\n`;
-        const dyn = part as {
-          state?: string;
-          output?: { title?: string; link?: string }[];
-        };
-        if (dyn.state === "output-available" && Array.isArray(dyn.output)) {
-          dyn.output.forEach((item) => {
-            if (item.title && item.link) {
-              md += `- [${item.title}](${item.link})\n`;
-            }
-          });
-          md += "\n";
-        }
-      }
-    });
-  });
-  return md;
-};
-
-const downloadMarkdown = (content: string) => {
-  const blob = new Blob([content], { type: "text/markdown" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "chat-export.md";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-};
 
 const ChatBotDemo = () => {
   const { data: session } = useSession();
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   // TODO: rename to messages
-  const [localMessages, setLocalMessages] = useState<UIMessage[]>([]);
+
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -119,12 +64,8 @@ const ChatBotDemo = () => {
 
     return baseNames[toolType] || toolType;
   };
-  const {
-    messages: chatMessages,
-    sendMessage,
-    status,
-    stop,
-  } = useChat({
+
+  const { messages, sendMessage, status, stop } = useChat({
     onError: (error) => {
       const message =
         (error as { message?: string })?.message ||
@@ -145,10 +86,6 @@ const ChatBotDemo = () => {
       }
     },
   });
-
-  useEffect(() => {
-    setLocalMessages(chatMessages);
-  }, [chatMessages]);
 
   const handleSubmit = async (
     message: PromptInputMessage,
@@ -194,11 +131,6 @@ const ChatBotDemo = () => {
     setInput("");
   };
 
-  const handleDownload = () => {
-    const md = convertMessagesToMarkdown(localMessages);
-    downloadMarkdown(md);
-  };
-
   const handleEditMessage = (messageId: string, currentText: string) => {
     setEditingMessageId(messageId);
     setEditingText(currentText);
@@ -206,11 +138,8 @@ const ChatBotDemo = () => {
 
   return (
     <div className="max-w-3xl mx-auto pt-0 p-3 relative size-full h-screen">
-      <Navbar
-        onDownload={handleDownload}
-        hasMessages={localMessages.length > 0}
-      />
-      {!localMessages || localMessages.length === 0 ? (
+      <Navbar hasMessages={messages.length > 0} />
+      {!messages || messages.length === 0 ? (
         <div className="absolute flex flex-col top-0 left-0 right-0 bottom-0 space-y-8 -z-50 items-center justify-center text-center mb-24 px-4">
           <div className="relative">
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl scale-150"></div>
@@ -233,7 +162,7 @@ const ChatBotDemo = () => {
       <div className="flex flex-col h-full">
         <Conversation className="h-full w-full">
           <ConversationContent>
-            {localMessages.map((message: UIMessage) => {
+            {messages.map((message: UIMessage) => {
               const metadata = message.metadata as
                 | undefined
                 | {
@@ -449,7 +378,7 @@ const ChatBotDemo = () => {
           </ConversationContent>
           <ConversationScrollButton />
         </Conversation>
-        <ConversationUserLocator messages={localMessages} />
+        <ConversationUserLocator messages={messages} />
         {session && (
           <AIInput
             handleSubmit={handleSubmit}

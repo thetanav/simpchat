@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import type { UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { ComponentProps, HTMLAttributes } from "react";
+import { memo } from "react";
 import { EditIcon, TrashIcon } from "lucide-react";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
@@ -12,7 +13,7 @@ export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   actionsVariant?: "hover" | "inline";
 };
 
-export const Message = ({
+export const Message = memo(({
   className,
   from,
   actions,
@@ -45,7 +46,9 @@ export const Message = ({
     </div>
     {actions && from === "user" && actionsVariant === "inline" && actions}
   </div>
-);
+));
+
+Message.displayName = "Message";
 
 const messageContentVariants = cva(
   "is-user:dark flex flex-col gap-2 overflow-hidden text-base prose",
@@ -72,7 +75,7 @@ const messageContentVariants = cva(
 export type MessageContentProps = HTMLAttributes<HTMLDivElement> &
   VariantProps<typeof messageContentVariants>;
 
-export const MessageContent = ({
+export const MessageContent = memo(({
   children,
   className,
   variant,
@@ -83,14 +86,16 @@ export const MessageContent = ({
     {...props}>
     {children}
   </div>
-);
+));
+
+MessageContent.displayName = "MessageContent";
 
 export type MessageAvatarProps = ComponentProps<typeof Avatar> & {
   src: string;
   name?: string;
 };
 
-export const MessageAvatar = ({
+export const MessageAvatar = memo(({
   src,
   name,
   className,
@@ -100,7 +105,9 @@ export const MessageAvatar = ({
     <AvatarImage alt="" className="mt-0 mb-0" src={src} />
     <AvatarFallback>{name?.slice(0, 2) || "ME"}</AvatarFallback>
   </Avatar>
-);
+));
+
+MessageAvatar.displayName = "MessageAvatar";
 
 export type MessageActionsProps = {
   role: UIMessage["role"];
@@ -110,7 +117,7 @@ export type MessageActionsProps = {
   variant?: "hover" | "inline";
 };
 
-export const MessageActions = ({
+export const MessageActions = memo(({
   role,
   onEdit,
   onDelete,
@@ -145,10 +152,12 @@ export const MessageActions = ({
       )}
     </div>
   );
-};
+});
+
+MessageActions.displayName = "MessageActions";
 
 // Separate component for assistant message delete button
-export const AssistantMessageDelete = ({
+export const AssistantMessageDelete = memo(({
   onDelete,
 }: {
   onDelete?: () => void;
@@ -160,4 +169,6 @@ export const AssistantMessageDelete = ({
       <TrashIcon className="h-3 w-3" />
     </Button>
   );
-};
+});
+
+AssistantMessageDelete.displayName = "AssistantMessageDelete";

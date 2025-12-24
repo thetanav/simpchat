@@ -8,14 +8,17 @@ import {
 import { cn } from "@/lib/utils";
 import type { ToolUIPart } from "ai";
 import type { ComponentProps, ReactNode } from "react";
+import { memo } from "react";
 import { CodeBlock } from "./code-block";
 import Shimmer from "./shimmer";
 
 export type ToolProps = ComponentProps<typeof Collapsible>;
 
-export const Tool = ({ className, ...props }: ToolProps) => (
+export const Tool = memo(({ className, ...props }: ToolProps) => (
   <Collapsible className={cn("not-prose my-2 w-full", className)} {...props} />
-);
+));
+
+Tool.displayName = "Tool";
 
 export type ToolHeaderProps = {
   type: ToolUIPart["type"];
@@ -24,7 +27,7 @@ export type ToolHeaderProps = {
   name: string;
 };
 
-export const ToolHeader = ({
+export const ToolHeader = memo(({
   className,
   state,
   name,
@@ -45,11 +48,13 @@ export const ToolHeader = ({
       )}
     </div>
   </CollapsibleTrigger>
-);
+));
+
+ToolHeader.displayName = "ToolHeader";
 
 export type ToolContentProps = ComponentProps<typeof CollapsibleContent>;
 
-export const ToolContent = ({ className, ...props }: ToolContentProps) => (
+export const ToolContent = memo(({ className, ...props }: ToolContentProps) => (
   <CollapsibleContent
     className={cn(
       "data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-2 text-popover-foreground outline-none data-[state=closed]:animate-out data-[state=open]:animate-in",
@@ -57,13 +62,15 @@ export const ToolContent = ({ className, ...props }: ToolContentProps) => (
     )}
     {...props}
   />
-);
+));
+
+ToolContent.displayName = "ToolContent";
 
 export type ToolInputProps = ComponentProps<"div"> & {
   input: ToolUIPart["input"];
 };
 
-export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
+export const ToolInput = memo(({ className, input, ...props }: ToolInputProps) => (
   <div className={cn("space-y-2 overflow-hidden p-4", className)} {...props}>
     <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
       Parameters
@@ -72,14 +79,16 @@ export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
       <CodeBlock code={JSON.stringify(input, null, 2)} language="json" />
     </div>
   </div>
-);
+));
+
+ToolInput.displayName = "ToolInput";
 
 export type ToolOutputProps = ComponentProps<"div"> & {
   output: ToolUIPart["output"];
   errorText: ToolUIPart["errorText"];
 };
 
-export const ToolOutput = ({
+export const ToolOutput = memo(({
   className,
   output,
   errorText,
@@ -116,4 +125,6 @@ export const ToolOutput = ({
       </div>
     </div>
   );
-};
+});
+
+ToolOutput.displayName = "ToolOutput";

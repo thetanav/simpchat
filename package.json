@@ -51,6 +51,7 @@
     "embla-carousel-react": "^8.6.0",
     "katex": "^0.16.25",
     "lucide-react": "^0.544.0",
+    "microsandbox": "^0.1.1",
     "motion": "^12.23.12",
     "nanoid": "^5.1.5",
     "next": "15.5.3",

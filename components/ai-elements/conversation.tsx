@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowDownIcon, UserIcon } from "lucide-react";
 import type { ComponentProps } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
 
 export type ConversationProps = ComponentProps<typeof StickToBottom>;
 
-export const Conversation = ({ className, ...props }: ConversationProps) => (
+export const Conversation = memo(({ className, ...props }: ConversationProps) => (
   <StickToBottom
     className={cn("relative flex-1 overflow-y-auto", className)}
     initial="smooth"
@@ -17,18 +17,22 @@ export const Conversation = ({ className, ...props }: ConversationProps) => (
     role="log"
     {...props}
   />
-);
+));
+
+Conversation.displayName = "Conversation";
 
 export type ConversationContentProps = ComponentProps<
   typeof StickToBottom.Content
 >;
 
-export const ConversationContent = ({
+export const ConversationContent = memo(({
   className,
   ...props
 }: ConversationContentProps) => (
-   <StickToBottom.Content className={cn("p-6", className)} {...props} />
-);
+    <StickToBottom.Content className={cn("p-6", className)} {...props} />
+));
+
+ConversationContent.displayName = "ConversationContent";
 
 export type ConversationEmptyStateProps = ComponentProps<"div"> & {
   title?: string;
@@ -36,7 +40,7 @@ export type ConversationEmptyStateProps = ComponentProps<"div"> & {
   icon?: React.ReactNode;
 };
 
-export const ConversationEmptyState = ({
+export const ConversationEmptyState = memo(({
   className,
   title = "No messages yet",
   description = "Start a conversation to see messages here",
@@ -62,11 +66,13 @@ export const ConversationEmptyState = ({
       </>
     )}
   </div>
-);
+));
+
+ConversationEmptyState.displayName = "ConversationEmptyState";
 
 export type ConversationScrollButtonProps = ComponentProps<typeof Button>;
 
-export const ConversationScrollButton = ({
+export const ConversationScrollButton = memo(({
   className,
   ...props
 }: ConversationScrollButtonProps) => {
@@ -92,14 +98,16 @@ export const ConversationScrollButton = ({
       </Button>
     )
   );
-};
+});
+
+ConversationScrollButton.displayName = "ConversationScrollButton";
 
 export type ConversationUserLocatorProps = {
   messages: Array<{ id: string; role: string }>;
   className?: string;
 };
 
-export const ConversationUserLocator = ({
+export const ConversationUserLocator = memo(({
   messages,
   className
 }: ConversationUserLocatorProps) => {
@@ -134,4 +142,6 @@ export const ConversationUserLocator = ({
       <UserIcon className="w-3 h-3" />
     </button>
   );
-};
+});
+
+ConversationUserLocator.displayName = "ConversationUserLocator";
