@@ -1,9 +1,10 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./lib/db";
-import { polar, checkout } from "@polar-sh/better-auth";
-import { Polar } from "@polar-sh/sdk";
 
+// TODO: Implement Polar integration for payments when ready
+// import { polar, checkout } from "@polar-sh/better-auth";
+// import { Polar } from "@polar-sh/sdk";
 // const polarClient = new Polar({
 //   accessToken: process.env.POLAR_ACCESS_TOKEN,
 // });
@@ -17,7 +18,7 @@ export const auth = betterAuth({
     },
   },
   database: prismaAdapter(prisma, {
-    provider: "postgresql", // or "mysql", "postgresql", ...etc
+    provider: "postgresql",
   }),
   // plugins: [
   //   polar({
@@ -28,7 +29,7 @@ export const auth = betterAuth({
   //         products: [
   //           {
   //             productId: "727ebc00-165b-49f6-907b-febaabb6bc92",
-  //             slug: "Simp-AI-Pro", // Custom slug for easy reference in Checkout URL, e.g. /checkout/Simp-AI-Pro
+  //             slug: "Simp-AI-Pro",
   //           },
   //         ],
   //         successUrl: process.env.POLAR_SUCCESS_URL,

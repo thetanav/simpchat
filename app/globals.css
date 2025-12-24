@@ -118,12 +118,8 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-    @apply border-border outline-ring/50;
-  }
   body {
-    @apply bg-background text-foreground text-base leading-relaxed;
+    @apply bg-background text-foreground text-md leading-relaxed;
     font-feature-settings: "rlig" 1, "calt" 1;
     @apply bg-background text-foreground;
   }
@@ -148,7 +144,7 @@
   button:focus-visible,
   input:focus-visible,
   textarea:focus-visible {
-    @apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background;
+    @apply outline-none ring-0;
   }
 
   /* Beautiful shimmer animation for thinking state */
@@ -170,9 +166,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
   body {
     @apply bg-background text-foreground;
   }

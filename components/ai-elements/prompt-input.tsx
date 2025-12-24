@@ -519,7 +519,7 @@ export const PromptInputButton = ({
   return (
     <Button
       className={cn(
-        "shrink-0 gap-1.5 rounded-2xl cursor-pointer p-3",
+        "shrink-0 gap-1.5 cursor-pointer",
         variant === "ghost" && "text-muted-foreground",
         newSize === "default",
         className

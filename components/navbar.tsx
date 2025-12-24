@@ -1,5 +1,4 @@
-import { Settings2Icon, DownloadIcon, Trash2Icon } from "lucide-react";
-import { ModeToggle } from "./theme_toggle";
+import { Settings2Icon, DownloadIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Tooltip,
@@ -8,22 +7,17 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import Link from "next/link";
-import Image from "next/image";
-import { useSession } from "@/lib/auth-client";
 import { SidebarTrigger } from "./ui/sidebar";
 
 interface NavbarProps {
   onDownload?: () => void;
-  onClearMessages?: () => void;
   hasMessages?: boolean;
 }
 
 export default function Navbar({
   onDownload,
-  onClearMessages,
   hasMessages,
 }: NavbarProps) {
-  const { data: session } = useSession();
   return (
     <TooltipProvider>
       <nav className="fixed top-3 right-3 left-3 justify-between flex items-center z-50">
