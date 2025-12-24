@@ -6,6 +6,8 @@ import { Toaster } from "sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+
 const sans = Inter({
   subsets: ["latin"],
 });
@@ -49,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body
         className={`${sans.className} antialiased min-h-screen bg-background`}>
         <ThemeProvider

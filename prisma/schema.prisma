@@ -14,13 +14,13 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String          @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean         @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
   conversations Conversations[]
@@ -30,13 +30,13 @@ model User {
 }
 
 model Conversations {
-  id String @id @default(uuid())
-  title String
+  id        String   @id @default(uuid())
+  title     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId String
-  messages Json @default("[]")
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  messages  Json     @default("[]")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("conversations")
@@ -55,6 +55,7 @@ model Session {
 
   @@unique([token])
   @@map("session")
+  @@index([userId])
 }
 
 model Account {
@@ -74,6 +75,7 @@ model Account {
   updatedAt             DateTime  @updatedAt
 
   @@map("account")
+  @@index([userId])
 }
 
 model Verification {
@@ -85,4 +87,5 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+  @@index([identifier])
 }

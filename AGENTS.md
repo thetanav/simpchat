@@ -1,12 +1,12 @@
 # Agent Guidelines for pplx
 
 ## Commands
-- **Build**: `pnpm build` (Next.js with Turbopack)
-- **Dev**: `pnpm dev` (Next.js with Turbopack)
-- **Lint**: `pnpm lint` (ESLint with Next.js config)
-- **Typecheck**: `pnpm typecheck` (TypeScript strict mode)
-- **Check**: `pnpm check` (lint + typecheck)
-- **DB**: `pnpm db:migrate`, `pnpm db:generate`, `pnpm db:push`
+- **Build**: `bun run build` (Next.js with Turbopack)
+- **Dev**: `bun run dev` (Next.js with Turbopack)
+- **Lint**: `bun run lint` (ESLint with Next.js config)
+- **Typecheck**: `bun run typecheck` (TypeScript strict mode)
+- **Check**: `bun run check` (lint + typecheck)
+- **DB**: `bun run db:migrate`, `bun run db:generate`, `bun run db:push`
 
 ## Code Style
 - **Language**: TypeScript with strict mode enabled
