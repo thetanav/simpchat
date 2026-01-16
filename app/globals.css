@@ -119,19 +119,9 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground text-md leading-relaxed;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground leading-relaxed;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-semibold tracking-tight;
-  }
   /* Smooth transitions for better UX */
   button,
   a,
@@ -162,11 +152,5 @@
 
   .shimmer-thinking {
     animation: shimmer-wave 2s ease-in-out infinite;
-  }
-}
-
-@layer base {
-  body {
-    @apply bg-background text-foreground;
   }
 }

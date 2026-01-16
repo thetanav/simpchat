@@ -98,7 +98,7 @@ export default function AIInput({
   const currentModel = models.find((m) => m.value === model);
 
   return (
-    <div className="grid w-full max-w-sm gap-6">
+    <div className="w-full mx-auto max-w-xl">
       <InputGroup>
         <InputGroupTextarea
           onChange={(e) => setInput(e.target.value)}
@@ -107,13 +107,13 @@ export default function AIInput({
         <InputGroupAddon align="block-end">
           <InputGroupButton
             variant="outline"
-            className="rounded-full cursor-pointer"
+            className="rounded cursor-pointer"
             size="icon-xs">
             <Plus />
           </InputGroupButton>
           <InputGroupButton
             variant={deepresearch ? "default" : "outline"}
-            className="rounded-full cursor-pointer"
+            className="rounded cursor-pointer"
             onClick={() => setDeepresearch(!deepresearch)}
             size="icon-xs">
             <TelescopeIcon />
@@ -130,7 +130,7 @@ export default function AIInput({
                   key={modelOption.value}
                   onClick={() => setModel(modelOption.value)}
                   // value={modelOption.value}
-                  className="cursor-pointer hover:text-current transition-colors">
+                  className="cursor-pointer">
                   <div className="flex items-center gap-3 w-full">
                     <Image
                       alt={modelOption.name}
@@ -184,7 +184,7 @@ export default function AIInput({
           <Separator orientation="vertical" className="!h-4" /> */}
           <InputGroupButton
             variant="default"
-            className="rounded-full ml-auto"
+            className="rounded ml-auto"
             size="icon-xs"
             onClick={() => handleSubmit(input as any, deepresearch)}
             disabled={!input.trim() && status !== "streaming"}>

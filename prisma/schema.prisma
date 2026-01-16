@@ -24,6 +24,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   conversations Conversations[]
+  apiKeys       Json            @default("{}")
 
   @@unique([email])
   @@map("user")

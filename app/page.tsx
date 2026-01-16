@@ -33,8 +33,11 @@ export default function HomePage() {
     } catch (error) {
       console.error("Error creating conversation:", error);
       setStatus("error");
-      // For now, redirect to a dummy chat
-      router.push(`/c/${Date.now()}`);
+      const errMsg =
+        error instanceof Error ? error.message : "Failed to start conversation";
+      // Removed dummy redirect, now show a toast error
+      // router.push(`/c/${Date.now()}`); 
+      toast.error("Failed to start conversation", { description: errMsg });
     }
   };
 

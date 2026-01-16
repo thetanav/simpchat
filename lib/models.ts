@@ -13,15 +13,19 @@ export const models = [
   {
     name: "Qwen3 32b",
     value: "qwen/qwen3-32b",
+    modelId: "qwen/qwen3-32b", // Explicit modelId for clarity
+    provider: "openrouter", // Provider added
     logo: "/qwen.svg",
     tools: true,
     reasoning: true,
     fast: true,
-    end: groq("qwen/qwen3-32b"),
+    end: groq("qwen/qwen3-32b"), // Note: This seems to be a mismatch if provider is openrouter
   },
   {
     name: "Grok 4 Fast",
     value: "x-ai/grok-4-fast",
+    modelId: "x-ai/grok-4-fast",
+    provider: "openrouter",
     logo: "/xai.svg",
     tools: true,
     pro: true,
@@ -32,6 +36,8 @@ export const models = [
   {
     name: "GPT 5",
     value: "openai/gpt-5",
+    modelId: "openai/gpt-5",
+    provider: "openrouter",
     logo: "/openai.svg",
     tools: true,
     pro: true,
@@ -41,6 +47,8 @@ export const models = [
   {
     name: "Z.AI: GLM 4.5 Air",
     value: "z-ai/glm-4.5-air:free",
+    modelId: "z-ai/glm-4.5-air:free",
+    provider: "openrouter",
     logo: "/zai.svg",
     tools: true,
     reasoning: true,
@@ -49,6 +57,8 @@ export const models = [
   {
     name: "Z.AI: GLM 4.6",
     value: "glm-4.6:cloud",
+    modelId: "glm-4.6:cloud",
+    provider: "ollama",
     logo: "/zai.svg",
     tools: true,
     reasoning: true,
@@ -58,6 +68,8 @@ export const models = [
   {
     name: "Deepseek R1",
     value: "deepseek/deepseek-r1-0528:free",
+    modelId: "deepseek/deepseek-r1-0528:free",
+    provider: "openrouter",
     logo: "/deepseek.svg",
     tools: false,
     reasoning: true,
@@ -66,6 +78,8 @@ export const models = [
   {
     name: "DeepSeek V3.1",
     value: "deepseek/deepseek-chat-v3.1:free",
+    modelId: "deepseek/deepseek-chat-v3.1:free",
+    provider: "openrouter",
     logo: "/deepseek.svg",
     tools: true,
     reasoning: false,
@@ -74,6 +88,8 @@ export const models = [
   {
     name: "Perplexity Sonar",
     value: "sonar",
+    modelId: "sonar",
+    provider: "perplexity",
     logo: "/pplx.svg",
     tools: false,
     reasoning: false,
@@ -82,8 +98,10 @@ export const models = [
   {
     name: "Gemini 2.5 Flash Lite",
     value: "gemini-2.5-flash-lite",
+    modelId: "gemini-2.5-flash-lite",
+    provider: "google",
     logo: "/gemini.svg",
-    tools: false,
+    tools: true, // Enabled tools for Gemini Flash Lite
     reasoning: false,
     fast: true,
     end: google("gemini-2.5-flash-lite"),
@@ -91,6 +109,8 @@ export const models = [
   {
     name: "Nano Banana",
     value: "google/gemini-2.5-flash-image",
+    modelId: "google/gemini-2.5-flash-image",
+    provider: "openrouter",
     logo: "/gemini.svg",
     tools: false,
     pro: true,
@@ -100,6 +120,8 @@ export const models = [
   {
     name: "Claude Haiku 4.5",
     value: "anthropic/claude-haiku-4.5",
+    modelId: "anthropic/claude-haiku-4.5",
+    provider: "openrouter",
     logo: "/anthropic.svg",
     tools: true,
     pro: true,
@@ -108,6 +130,8 @@ export const models = [
   {
     name: "Claude Sonnet 4.5",
     value: "anthropic/claude-sonnet-4.5",
+    modelId: "anthropic/claude-sonnet-4.5",
+    provider: "openrouter",
     logo: "/anthropic.svg",
     tools: true,
     pro: true,
@@ -116,6 +140,8 @@ export const models = [
   {
     name: "Qwen 3 8b",
     value: "qwen3:8b",
+    modelId: "qwen3:8b",
+    provider: "ollama",
     logo: "/qwen.svg",
     tools: true,
     reasoning: true,

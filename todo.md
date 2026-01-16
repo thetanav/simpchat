@@ -4,14 +4,14 @@
 - [x] ollama models
 - [x] custom instructions
 - [x] generate images
-- [ ] own api keys
+- [x] own api keys
 - [x] working app
 - [x] some bug fixs
 - [x] search tool must have favicons after the searching indicators
 - [ ] launch - 30 oct 2025
 - [ ] paymen
-- [ ] save conversations
+- [x] save conversations
 - [ ] more tools
   - [x] scrape a page
-  - code executor
-  - send emails
+  - [x] code executor
+  - [x] send emails

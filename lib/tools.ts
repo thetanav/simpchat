@@ -148,4 +148,63 @@ export const localTools = {
       };
     },
   }),
+  code_executor: tool({
+    description: "Execute code in various programming languages. Supports bash, python, and javascript/node.",
+    inputSchema: z.object({
+      code: z.string().describe("The code to execute"),
+      language: z.enum(["bash", "python", "javascript", "node"]).optional().default("bash").describe("The programming language of the code. Defaults to bash."),
+    }),
+    execute: async ({ code, language }) => {
+      try {
+        const response = await fetch("/api/execute-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code, language }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to execute code.");
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error: any) {
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+    },
+  }),
+  send_email: tool({
+    description: "Send an email to a specified recipient with a subject and body.",
+    inputSchema: z.object({
+      to: z.string().email().describe("The recipient's email address"),
+      subject: z.string().min(1).describe("The subject of the email"),
+      body: z.string().min(1).describe("The body content of the email"),
+    }),
+    execute: async ({ to, subject, body }) => {
+      try {
+        const response = await fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ to, subject, body }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to send email.");
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error: any) {
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+    },
+  }),
 };
