@@ -84,7 +84,7 @@ function MessagePartRenderer({
     case part.type === "text":
       return (
         <div key={key} className="prose prose-sm dark:prose-invert max-w-none">
-          <Response className="text-base leading-relaxed">
+          <Response className="text-base leading-relaxed" isStreaming={isStreaming}>
             {filePart.text}
           </Response>
         </div>
