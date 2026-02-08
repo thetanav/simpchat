@@ -4,7 +4,7 @@ import {
   convertToModelMessages,
   stepCountIs,
   LanguageModel,
-  CoreMessage,
+  smoothStream,
 } from "ai";
 import { models } from "@/lib/models";
 import { localTools } from "@/lib/tools";
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       {
         status: 400,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   }
 
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
   let languageModel: LanguageModel | undefined;
 
   if (selectedModelConfig) {
-    const modelProvider = selectedModelConfig.provider || model.split('-')[0]; // Assuming provider is the first part of the model name or explicitly set
+    const modelProvider = selectedModelConfig.provider || model.split("-")[0]; // Assuming provider is the first part of the model name or explicitly set
     const userApiKey = userApiKeys[modelProvider];
 
     switch (modelProvider) {
@@ -120,17 +120,21 @@ export async function POST(req: Request) {
       {
         status: 400,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   }
 
   const result = streamText({
     model: languageModel,
     messages: convertToModelMessages(
-      messages as unknown as Parameters<typeof convertToModelMessages>[0]
+      messages as unknown as Parameters<typeof convertToModelMessages>[0],
     ),
     system: systemPrompt,
     tools,
+    experimental_transform: smoothStream({
+      delayInMs: 20,
+      chunking: "word",
+    }),
     stopWhen: stepCountIs(20),
     // maxOutputTokens: 4000,
     onError: (err) => {
@@ -145,27 +149,31 @@ export async function POST(req: Request) {
               createdAt: new Date(),
               role: m.role,
               content: typeof m.content === "string" ? m.content : "",
-              parts:
-                Array.isArray(m.content)
-                  ? m.content.map((p) => {
+              parts: Array.isArray(m.content)
+                ? m.content.map((p) => {
                     if (p.type === "tool-call") {
+                      type CustomToolCallPart = typeof p & {
+                        args?: any;
+                        input?: any;
+                      };
+                      const customP = p as CustomToolCallPart;
                       return {
                         type: "tool-invocation",
                         toolCallId: p.toolCallId,
                         toolName: p.toolName,
-                        args: (p as any).args ?? (p as any).input,
+                        args: customP.args ?? customP.input,
                       };
                     }
                     return p;
                   })
-                  : [{ type: "text", text: m.content }],
+                : [{ type: "text", text: m.content }],
             };
           });
 
           await prisma.conversations.update({
             where: { id },
             data: {
-              messages: [...messages, ...generatedMessages] as any,
+              messages: [...(messages as any[]), ...generatedMessages],
             },
           });
         } catch (error) {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme_provider";
 import { Toaster } from "sonner";
@@ -7,9 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import Navbar from "@/components/navbar";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
-
-const sans = Inter({
+const sans = Geist({
   subsets: ["latin"],
 });
 
@@ -22,7 +20,7 @@ export const metadata: Metadata = {
   description: "Simple AI chat with lots of models and tools.",
   applicationName: "Simp Chat",
   keywords: ["AI", "chat", "OpenRouter", "Groq", "Perplexity", "Gemini"],
-  authors: [{ name: "tanav", url: "https://tanavindev.tech" }],
+  authors: [{ name: "tanav", url: "https://tanav.me" }],
   creator: "tanav",
   openGraph: {
     type: "website",
@@ -52,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
+    <html lang="en" suppressHydrationWarning className={sans.className}>
       <body
         className={`${sans.className} antialiased min-h-screen bg-background`}>
         <ThemeProvider

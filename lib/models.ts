@@ -148,4 +148,15 @@ export const models = [
     local: true,
     end: ollama("qwen3:8b"),
   },
+  {
+    name: "Gemma 3",
+    value: "gemma3:1b",
+    modelId: "gemma3:1b",
+    provider: "ollama",
+    logo: "/gemini.svg",
+    tools: false,
+    reasoning: false,
+    local: true,
+    end: ollama("gemma3:1b"),
+  },
 ];

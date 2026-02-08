@@ -4,12 +4,8 @@ import ChatClientPage from "./chat-client-page";
 import { auth } from "@/auth";
 import { headers } from "next/headers";
 
-export default async function ChatPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const { id } = params;
+export default async function ChatPage({ params }: { params: { id: string } }) {
+  const { id } = await params;
 
   let initialMessages: UIMessage[] = [];
   let initialTitle: string | undefined;
@@ -47,11 +43,5 @@ export default async function ChatPage({
     }
   }
 
-  return (
-    <ChatClientPage
-      id={id}
-      initialMessages={initialMessages}
-      initialTitle={initialTitle}
-    />
-  );
+  return <ChatClientPage id={id} initialMessages={initialMessages} />;
 }

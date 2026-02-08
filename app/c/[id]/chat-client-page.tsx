@@ -9,7 +9,7 @@ import { BoxIcon, GlobeIcon, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Components
-import AIInput from "@/components/ai-input";
+import ChatInput from "@/components/chat-input";
 import {
   Conversation,
   ConversationContent,
@@ -82,7 +82,9 @@ function MessagePartRenderer({
     case part.type === "text":
       return (
         <div key={key} className="prose prose-sm dark:prose-invert max-w-none">
-          <Response className="text-base leading-relaxed" isStreaming={isStreaming}>
+          <Response
+            className="text-base leading-relaxed"
+            isStreaming={isStreaming}>
             {filePart.text}
           </Response>
         </div>
@@ -90,16 +92,17 @@ function MessagePartRenderer({
 
     case part.type === "reasoning":
       return (
-        <div
-          key={key}
-          className="rounded-lg border border-border/50 bg-muted/30 p-3">
+        <div key={key} className="">
           <Reasoning isStreaming={isStreaming} defaultOpen={true} />
         </div>
       );
 
     case part.type === "tool-code_executor":
       const codeExecutorDyn = part as unknown as DynamicToolUIPart;
-      if (codeExecutorDyn.state === "output-available" && codeExecutorDyn.output) {
+      if (
+        codeExecutorDyn.state === "output-available" &&
+        codeExecutorDyn.output
+      ) {
         const output = codeExecutorDyn.output as {
           stdout: string;
           stderr: string;
@@ -108,7 +111,9 @@ function MessagePartRenderer({
           success: boolean;
         };
         return (
-          <div key={key} className="space-y-2 p-3 border rounded-md bg-muted/30">
+          <div
+            key={key}
+            className="space-y-2 p-3 border rounded-md bg-muted/30">
             <p className="text-sm font-semibold">Code Execution Result:</p>
             {output.stdout && (
               <div>
@@ -125,7 +130,9 @@ function MessagePartRenderer({
             {output.error && (
               <p className="text-sm text-red-500">Error: {output.error}</p>
             )}
-            <p className="text-xs text-muted-foreground">Exit Code: {output.exitCode}</p>
+            <p className="text-xs text-muted-foreground">
+              Exit Code: {output.exitCode}
+            </p>
           </div>
         );
       }
@@ -140,12 +147,18 @@ function MessagePartRenderer({
           error?: string;
         };
         return (
-          <div key={key} className="space-y-2 p-3 border rounded-md bg-muted/30">
+          <div
+            key={key}
+            className="space-y-2 p-3 border rounded-md bg-muted/30">
             <p className="text-sm font-semibold">Email Sending Result:</p>
             {output.success ? (
-              <p className="text-sm text-green-500">{output.message || "Email sent successfully."}</p>
+              <p className="text-sm text-green-500">
+                {output.message || "Email sent successfully."}
+              </p>
             ) : (
-              <p className="text-sm text-red-500">{output.error || "Failed to send email."}</p>
+              <p className="text-sm text-red-500">
+                {output.error || "Failed to send email."}
+              </p>
             )}
           </div>
         );
@@ -173,7 +186,6 @@ function MessagePartRenderer({
           )}
         </Tool>
       );
-
 
     case part.type === "file" && filePart.mediaType?.startsWith("image/"):
       return (
@@ -261,7 +273,7 @@ export default function ChatClientPage({
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [conversationId, setConversationId] = useState<string | null>(
-    id !== "new" ? id : null
+    id !== "new" ? id : null,
   );
   const [error, setError] = useState<string | null>(null);
 
@@ -326,7 +338,7 @@ export default function ChatClientPage({
               deepresearch,
               id: conversationId,
             },
-          }
+          },
         );
         setInput("");
       } catch (err) {
@@ -337,7 +349,7 @@ export default function ChatClientPage({
         toast.error("Failed to send message", { description: errMsg });
       }
     },
-    [conversationId, model, sendMessage, router]
+    [conversationId, model, sendMessage, router],
   );
 
   // Extract search results from all message parts
@@ -357,15 +369,15 @@ export default function ChatClientPage({
       });
       return results;
     },
-    []
+    [],
   );
 
   const isStreaming = useMemo(() => status === "streaming", [status]);
 
   return (
-    <div className="relative flex h-screen w-full flex-col bg-background">
+    <div className="flex h-screen w-full border flex-col bg-background">
       {/* Main Chat Area */}
-      <div className="mx-auto w-full max-w-3xl flex flex-col flex-1 px-3 sm:px-4 py-0">
+      <div className="relative mx-auto w-full max-w-3xl flex flex-col flex-1 px-3 sm:px-4 py-0">
         {/* Error Alert */}
         {error && (
           <Alert variant="destructive" className="my-2">
@@ -389,7 +401,7 @@ export default function ChatClientPage({
                   <Message from={message.role} actionsVariant="hover">
                     <MessageContent>
                       {/* Message Parts */}
-                      <div className="space-y-3">
+                      <div className="space-y-1">
                         {message.parts.map((part, i) => (
                           <MessagePartRenderer
                             key={`${message.id}-${i}`}
@@ -403,11 +415,9 @@ export default function ChatClientPage({
 
                       {/* Assistant Message Footer */}
                       {message.role === "assistant" && (
-                        <div className="mt-4 flex items-center justify-between gap-3 pt-3 border-t border-border/40">
+                        <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2 min-w-0">
-                            <div className="flex-shrink-0 p-1.5 rounded-md bg-secondary/50">
-                              <BoxIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                            </div>
+                            <BoxIcon className="h-3.5 w-3.5 text-muted-foreground" />
                             <span className="truncate text-xs font-medium text-muted-foreground">
                               {metadata?.model}
                             </span>
@@ -436,26 +446,28 @@ export default function ChatClientPage({
         </Conversation>
 
         {/* User Locator */}
-        <ConversationUserLocator messages={messages} />
+        {/* <ConversationUserLocator messages={messages} /> */}
 
         {/* Input Area */}
-        {session ? (
-          <AIInput
-            handleSubmit={handleSubmit}
-            setInput={setInput}
-            input={input}
-            setModel={setModel}
-            model={model}
-            status={status}
-            stop={stop}
-          />
-        ) : (
-          <div className="border-t bg-background/80 backdrop-blur-md border-border/50 p-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              Please sign in to continue chatting.
-            </p>
-          </div>
-        )}
+        <div className="sticky bottom-4 left-0 right-0 z-20">
+          {session ? (
+            <ChatInput
+              handleSubmit={handleSubmit}
+              setInput={setInput}
+              input={input}
+              setModel={setModel}
+              model={model}
+              status={status}
+              stop={stop}
+            />
+          ) : (
+            <div className="border-t bg-background/80 backdrop-blur-md border-border/50 p-4 text-center">
+              <p className="text-sm text-muted-foreground">
+                Please sign in to continue chatting.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
