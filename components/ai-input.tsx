@@ -1,20 +1,5 @@
 import { models } from "@/lib/models";
-import {
-  PromptInput,
-  PromptInputActionMenuTrigger,
-  PromptInputAttachment,
-  PromptInputAttachments,
-  PromptInputBody,
-  PromptInputModelSelect,
-  PromptInputModelSelectContent,
-  PromptInputModelSelectItem,
-  PromptInputModelSelectTrigger,
-  PromptInputSubmit,
-  PromptInputTextarea,
-  PromptInputToolbar,
-  PromptInputTools,
-  type PromptInputMessage,
-} from "./ai-elements/prompt-input";
+import { type PromptInputMessage } from "./ai-elements/prompt-input";
 
 import Image from "next/image";
 import {
@@ -22,7 +7,6 @@ import {
   GemIcon,
   ImageIcon,
   MonitorDownIcon,
-  PaperclipIcon,
   Plus,
   TelescopeIcon,
   ZapIcon,
@@ -33,7 +17,6 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
-  InputGroupText,
   InputGroupTextarea,
 } from "./ui/input-group";
 import {
@@ -42,9 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Separator } from "./ui/separator";
 import { ArrowUpIcon } from "@phosphor-icons/react";
-import { Button } from "./ui/button";
 
 type AIInputProps = {
   handleSubmit: (message: PromptInputMessage, deepresearch?: boolean) => void;
@@ -53,7 +34,6 @@ type AIInputProps = {
   setModel: Dispatch<SetStateAction<string>>;
   model: string;
   status: ChatStatus;
-  stop: () => Promise<void>;
 };
 
 // Component for rendering model badges
@@ -92,7 +72,6 @@ export default function AIInput({
   setModel,
   model,
   status,
-  stop,
 }: AIInputProps) {
   const [deepresearch, setDeepresearch] = useState(false);
   const currentModel = models.find((m) => m.value === model);
@@ -186,7 +165,7 @@ export default function AIInput({
             variant="default"
             className="rounded ml-auto"
             size="icon-xs"
-            onClick={() => handleSubmit(input as any, deepresearch)}
+            onClick={() => handleSubmit({ text: input }, deepresearch)}
             disabled={!input.trim() && status !== "streaming"}>
             <ArrowUpIcon />
             <span className="sr-only">Send</span>

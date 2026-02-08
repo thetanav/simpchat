@@ -4,9 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PromptInput, PromptInputBody, PromptInputTextarea, PromptInputToolbar, PromptInputSubmit, type PromptInputMessage } from "@/components/ai-elements/prompt-input";
 import { ChatStatus } from "ai";
-import { SmileIcon } from "lucide-react";
-import Navbar from "@/components/navbar";
+import { BotIcon } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+
+const examplePrompts = [
+    "What is the meaning of life?",
+    "Write a poem about a robot who falls in love with a human.",
+    "What is the best way to learn a new language?",
+]
 
 export default function HomePage() {
   const router = useRouter();
@@ -48,30 +54,32 @@ export default function HomePage() {
 
   return (
     <div className="max-w-3xl mx-auto pt-0 p-3 relative size-full h-screen">
-      <Navbar />
       <div className="absolute flex flex-col top-0 left-0 right-0 bottom-0 space-y-8 -z-50 items-center justify-center text-center mb-24 px-4">
         <div className="relative">
           <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl scale-150"></div>
-          <SmileIcon
+          <BotIcon
             className="relative w-24 h-24 text-primary drop-shadow-lg"
             suppressHydrationWarning={true}
           />
         </div>
         <div className="space-y-4">
           <h2 className="text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent leading-tight">
-            Welcome to Simp AI
+            Hello, how can I help you today?
           </h2>
           <p className="text-muted-foreground text-lg max-w-md leading-relaxed font-medium">
-            Experience the future of AI conversation. Ask anything, explore ideas, and discover insights with our advanced agentic AI.
+            I am Simp, an agentic AI designed to help you with anything you need.
           </p>
         </div>
+        <div className="flex flex-wrap gap-2 justify-center">
+            {examplePrompts.map((prompt) => (
+                <Button key={prompt} variant="outline" onClick={() => setInput(prompt)}>{prompt}</Button>
+            ))}
+        </div>
       </div>
-      <div className="flex flex-col h-full justify-end pb-8">
-        <div className="flex justify-center">
-          <div className="w-full max-w-2xl">
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4">
             <PromptInput
               onSubmit={handleSubmit}
-              className="border-t bg-background/80 backdrop-blur-md border-border/50 shadow-lg outline-none">
+              className="border-t bg-background/80 backdrop-blur-md border-border/50 shadow-lg outline-none rounded-full">
               <PromptInputBody>
                 <PromptInputTextarea
                   onChange={(e) => setInput(e.target.value)}
@@ -92,8 +100,6 @@ export default function HomePage() {
               </PromptInputToolbar>
             </PromptInput>
           </div>
-        </div>
-      </div>
     </div>
   );
 }

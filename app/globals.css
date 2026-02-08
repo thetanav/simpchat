@@ -122,6 +122,9 @@
 @layer base {
   body {
     @apply bg-background text-foreground leading-relaxed;
+    background-image: radial-gradient(var(--border) 1px, transparent 0);
+    background-size: 2rem 2rem;
+    background-position: -1rem -1rem;
   }
 
   /* Smooth transitions for better UX */

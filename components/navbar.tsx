@@ -1,4 +1,4 @@
-import { Settings2Icon, DownloadIcon } from "lucide-react";
+import { Settings2Icon, DownloadIcon, BotIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Tooltip,
@@ -20,12 +20,15 @@ export default function Navbar({
 }: NavbarProps) {
   return (
     <TooltipProvider>
-      <nav className="fixed top-3 right-3 left-3 justify-between flex items-center z-50">
-        <div className="pl-3">
-          <SidebarTrigger />
+      <nav className="fixed top-3 left-1/2 -translate-x-1/2 justify-between flex items-center z-50 bg-card/80 backdrop-blur-md border shadow rounded-full p-2">
+        <div className="flex items-center gap-2">
+            <SidebarTrigger />
+            <Link href="/" className="flex items-center gap-2">
+                <BotIcon className="w-5 h-5 text-primary" />
+                <h1 className="text-lg font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">Simp</h1>
+            </Link>
         </div>
-        <div className="bg-card/80 backdrop-blur-md border shadow flex rounded-xl items-center p-1">
-          <div className="flex items-center">
+        <div className="flex items-center">
             {hasMessages && onDownload && (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -56,7 +59,6 @@ export default function Navbar({
                 <p>Settings</p>
               </TooltipContent>
             </Tooltip>
-          </div>
         </div>
       </nav>
     </TooltipProvider>

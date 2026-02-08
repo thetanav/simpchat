@@ -9,7 +9,6 @@ import { BoxIcon, GlobeIcon, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Components
-import Navbar from "@/components/navbar";
 import AIInput from "@/components/ai-input";
 import {
   Conversation,
@@ -57,7 +56,6 @@ interface SearchResult {
 interface ChatClientPageProps {
   id: string;
   initialMessages: UIMessage[];
-  initialTitle?: string;
 }
 
 // Component for rendering individual message parts
@@ -255,7 +253,6 @@ function SearchResultsDialog({ results }: { results: SearchResult[] }) {
 export default function ChatClientPage({
   id,
   initialMessages,
-  initialTitle,
 }: ChatClientPageProps) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -278,7 +275,7 @@ export default function ChatClientPage({
     if (initialMessages.length > 0) {
       setMessages(initialMessages);
     }
-  }, []);
+  }, [initialMessages, setMessages]);
 
   // Handlers
   const handleSubmit = useCallback(
@@ -367,9 +364,6 @@ export default function ChatClientPage({
 
   return (
     <div className="relative flex h-screen w-full flex-col bg-background">
-      {/* Header */}
-      <Navbar hasMessages={messages.length > 0} />
-
       {/* Main Chat Area */}
       <div className="mx-auto w-full max-w-3xl flex flex-col flex-1 px-3 sm:px-4 py-0">
         {/* Error Alert */}

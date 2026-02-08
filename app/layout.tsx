@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme_provider";
 import { Toaster } from "sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import Navbar from "@/components/navbar";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -62,6 +63,7 @@ export default function RootLayout({
           <Toaster position="top-right" closeButton />
           <SidebarProvider>
             <AppSidebar />
+            <Navbar />
             {children}
           </SidebarProvider>
         </ThemeProvider>
