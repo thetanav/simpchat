@@ -9,8 +9,8 @@ const SendEmailSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const parsed = SendEmailSchema.safeParse(body);
+    const requestBody = await req.json();
+    const parsed = SendEmailSchema.safeParse(requestBody);
 
     if (!parsed.success) {
       return new NextResponse(
@@ -25,14 +25,14 @@ export async function POST(req: Request) {
       );
     }
 
-    const { to, subject, body } = parsed.data;
+    const { to, subject, body: emailBody } = parsed.data;
 
     // In a real application, you would integrate with an email service here (e.g., SendGrid, Mailgun)
     // For this example, we'll just log the email details and return a success message.
     console.log("--- Sending Email ---");
     console.log(`To: ${to}`);
     console.log(`Subject: ${subject}`);
-    console.log(`Body: ${body}`);
+    console.log(`Body: ${emailBody}`);
     console.log("---------------------");
 
     // Simulate email sending delay

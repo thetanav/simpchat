@@ -14,11 +14,11 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/db";
 import { nanoid } from "nanoid";
 
-import { GoogleGenerativeAI } from "@ai-sdk/google";
-import { OpenAI } from "@ai-sdk/openai";
-import { Groq } from "@ai-sdk/groq";
-import { Perplexity } from "@ai-sdk/perplexity";
-import { OpenRouter } from "@openrouter/ai-sdk-provider";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createOpenAI } from "@ai-sdk/openai";
+import { createGroq } from "@ai-sdk/groq";
+import { createPerplexity } from "@ai-sdk/perplexity";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 
 export const maxDuration = 5;
 
@@ -82,29 +82,29 @@ export async function POST(req: Request) {
 
     switch (modelProvider) {
       case "gemini":
-        languageModel = new GoogleGenerativeAI({
+        languageModel = createGoogleGenerativeAI({
           apiKey: userApiKey || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
-        }).chat(selectedModelConfig.modelId || selectedModelConfig.value);
+        })(selectedModelConfig.modelId || selectedModelConfig.value);
         break;
       case "openai":
-        languageModel = new OpenAI({
+        languageModel = createOpenAI({
           apiKey: userApiKey || process.env.OPENAI_API_KEY,
-        }).chat(selectedModelConfig.modelId || selectedModelConfig.value);
+        })(selectedModelConfig.modelId || selectedModelConfig.value);
         break;
       case "groq":
-        languageModel = new Groq({
+        languageModel = createGroq({
           apiKey: userApiKey || process.env.GROQ_API_KEY,
-        }).chat(selectedModelConfig.modelId || selectedModelConfig.value);
+        })(selectedModelConfig.modelId || selectedModelConfig.value);
         break;
       case "perplexity":
-        languageModel = new Perplexity({
+        languageModel = createPerplexity({
           apiKey: userApiKey || process.env.PERPLEXITY_API_KEY,
-        }).chat(selectedModelConfig.modelId || selectedModelConfig.value);
+        })(selectedModelConfig.modelId || selectedModelConfig.value);
         break;
       case "openrouter":
-        languageModel = new OpenRouter({
+        languageModel = createOpenRouter({
           apiKey: userApiKey || process.env.OPENROUTER_API_KEY,
-        }).chat(selectedModelConfig.modelId || selectedModelConfig.value);
+        })(selectedModelConfig.modelId || selectedModelConfig.value);
         break;
       // Add other providers here
       default:
@@ -153,7 +153,7 @@ export async function POST(req: Request) {
                         type: "tool-invocation",
                         toolCallId: p.toolCallId,
                         toolName: p.toolName,
-                        args: p.args,
+                        args: (p as any).args ?? (p as any).input,
                       };
                     }
                     return p;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useChat, type UIMessage } from "@ai-sdk/react";
 import { toast } from "sonner";
 import { DynamicToolUIPart } from "ai";
@@ -100,7 +100,7 @@ function MessagePartRenderer({
       );
 
     case part.type === "tool-code_executor":
-      const codeExecutorDyn = part as DynamicToolUIPart;
+      const codeExecutorDyn = part as unknown as DynamicToolUIPart;
       if (codeExecutorDyn.state === "output-available" && codeExecutorDyn.output) {
         const output = codeExecutorDyn.output as {
           stdout: string;
@@ -134,7 +134,7 @@ function MessagePartRenderer({
       return null;
 
     case part.type === "tool-send_email":
-      const emailDyn = part as DynamicToolUIPart;
+      const emailDyn = part as unknown as DynamicToolUIPart;
       if (emailDyn.state === "output-available" && emailDyn.output) {
         const output = emailDyn.output as {
           success: boolean;
@@ -269,10 +269,16 @@ export default function ChatClientPage({
   const [error, setError] = useState<string | null>(null);
 
   // Chat Hook
-  const { messages, sendMessage, status, stop } = useChat({
+  const { messages, sendMessage, status, stop, setMessages } = useChat({
     id: conversationId || undefined,
-    initialMessages: initialMessages,
   });
+
+  // Set initial messages on mount
+  useEffect(() => {
+    if (initialMessages.length > 0) {
+      setMessages(initialMessages);
+    }
+  }, []);
 
   // Handlers
   const handleSubmit = useCallback(

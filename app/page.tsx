@@ -6,6 +6,7 @@ import { PromptInput, PromptInputBody, PromptInputTextarea, PromptInputToolbar, 
 import { ChatStatus } from "ai";
 import { SmileIcon } from "lucide-react";
 import Navbar from "@/components/navbar";
+import { toast } from "sonner";
 
 export default function HomePage() {
   const router = useRouter();

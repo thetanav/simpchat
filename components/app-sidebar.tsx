@@ -119,7 +119,7 @@ export async function AppSidebar() {
                           asChild
                           // isActive={chat.id === currentChatId}
                           className="flex-1">
-                          <button className="flex items-center w-full text-left p-2 rounded-md hover:bg-accent/50 transition-colors translate-x-5 group-hover:translate-x-0">
+                          <Link href={`/c/${chat.id}`} className="flex items-center w-full text-left p-2 rounded-md hover:bg-accent/50 transition-colors translate-x-5 group-hover:translate-x-0">
                             <MessageCircleIcon className="w-4 h-4 flex-shrink-0 text-primary/70" />
                             <div className="truncate text-sm font-medium text-foreground flex-1">
                               {chat.title}
@@ -127,7 +127,7 @@ export async function AppSidebar() {
                             <DeleteConversationButton
                               conversationId={chat.id}
                             />
-                          </button>
+                          </Link>
                         </SidebarMenuButton>
                       </div>
                     </SidebarMenuItem>
