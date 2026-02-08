@@ -11,6 +11,7 @@ import {
   Loader2,
   MonitorDownIcon,
   Plus,
+  Square,
   StopCircleIcon,
   ZapIcon,
 } from "lucide-react";
@@ -93,125 +94,110 @@ export default function ChatInput({
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center">
-      {isStreaming && (
-        <Button
-          variant="outline"
-          className="absolute -top-12 z-10 flex items-center gap-2"
-          onClick={stop}
-        >
-          <StopCircleIcon className="w-4 h-4" />
-          Stop Generating
-        </Button>
-      )}
-
-      <InputGroup className="bg-card px-4 pt-4 flex-col h-48">
-        <InputGroupTextarea
-          className="w-full"
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask, Search or Chat..."
-          value={input}
-        />
-        <InputGroupButton
-          variant="default"
-          className="rounded-lg cursor-pointer"
-          size="icon-sm"
-          onClick={() => handleSubmit({ text: input })}
-          disabled={!input.trim() || isStreaming}
-        >
-          {isStreaming ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <ArrowUpIcon weight="bold" className="h-5 w-5" />
-          )}
-          <span className="sr-only">Send</span>
-        </InputGroupButton>
-
+    <div className="bg-card/70 backdrop-blur-3xl p-2 pb-1 flex-col h-fit border border-b-0 rounded-t-xl">
+      <InputGroupTextarea
+        className="w-full h-fit"
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Ask, Search or Chat..."
+        value={input}
+      />
+      <div>
         <InputGroupAddon className="w-full flex items-center justify-between py-2">
-          <InputGroupButton
-            variant="outline"
-            className="rounded-lg cursor-pointer"
-            size="icon-sm"
-          >
-            <Plus />
-          </InputGroupButton>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <InputGroupButton variant="ghost" className="cursor-pointer">
-                {" "}
-                {currentModel?.name}
-                <ChevronDown />
-              </InputGroupButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="top" align="start" className="w-64">
-              {models.map((modelOption) => (
-                <DropdownMenuItem
-                  key={modelOption.value}
-                  onClick={() => setModel(modelOption.value)}
-                  className="cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 w-full">
-                    <Image
-                      alt={modelOption.name}
-                      src={"/ai-logos" + modelOption.logo}
-                      width={15}
-                      height={15}
-                      className="flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs">{modelOption.name}</p>
+          <div className="flex items-center justify-center gap-2">
+            <InputGroupButton
+              variant="outline"
+              className="rounded-lg cursor-pointer"
+              size="icon-sm">
+              <Plus />
+            </InputGroupButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="cursor-pointer flex items-center justify-center gap-1 w-fit">
+                  {currentModel?.name}
+                  <ChevronDown />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" align="start" className="w-64">
+                {models.map((modelOption) => (
+                  <DropdownMenuItem
+                    key={modelOption.value}
+                    onClick={() => setModel(modelOption.value)}
+                    className="cursor-pointer">
+                    <div className="flex items-center gap-3 w-full">
+                      <Image
+                        alt={modelOption.name}
+                        src={"/ai-logos" + modelOption.logo}
+                        width={15}
+                        height={15}
+                        className="flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs">{modelOption.name}</p>
+                      </div>
+                      <div className="flex gap-1 flex-wrap justify-end">
+                        {modelOption.reasoning && (
+                          <ModelBadge
+                            variant="reasoning"
+                            icon={BrainIcon}
+                            label="Reasoning"
+                          />
+                        )}
+                        {modelOption.fast && (
+                          <ModelBadge
+                            variant="fast"
+                            icon={ZapIcon}
+                            label="Fast"
+                          />
+                        )}
+                        {modelOption.image && (
+                          <ModelBadge
+                            variant="image"
+                            icon={ImageIcon}
+                            label="Image"
+                          />
+                        )}
+                        {modelOption.pro && (
+                          <ModelBadge
+                            variant="pro"
+                            icon={GemIcon}
+                            label="Pro"
+                          />
+                        )}
+                        {modelOption.local && (
+                          <ModelBadge
+                            variant="local"
+                            icon={MonitorDownIcon}
+                            label="Local"
+                          />
+                        )}
+                      </div>
                     </div>
-                    <div className="flex gap-1 flex-wrap justify-end">
-                      {modelOption.reasoning && (
-                        <ModelBadge
-                          variant="reasoning"
-                          icon={BrainIcon}
-                          label="Reasoning"
-                        />
-                      )}
-                      {modelOption.fast && (
-                        <ModelBadge variant="fast" icon={ZapIcon} label="Fast" />
-                      )}
-                      {modelOption.image && (
-                        <ModelBadge
-                          variant="image"
-                          icon={ImageIcon}
-                          label="Image"
-                        />
-                      )}
-                      {modelOption.pro && (
-                        <ModelBadge variant="pro" icon={GemIcon} label="Pro" />
-                      )}
-                      {modelOption.local && (
-                        <ModelBadge
-                          variant="local"
-                          icon={MonitorDownIcon}
-                          label="Local"
-                        />
-                      )}
-                    </div>
-                  </div>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <InputGroupButton
             variant="default"
-            className="rounded ml-auto"
-            size="icon-xs"
-            onClick={() => handleSubmit({ text: input })}
-            disabled={!input.trim() || isStreaming}
-          >
+            className="rounded-lg cursor-pointer"
+            size="icon-sm"
+            onClick={() => {
+              if (isStreaming) {
+                stop();
+              } else {
+                handleSubmit({ text: input });
+              }
+            }}
+            disabled={!input.trim() && !isStreaming}>
             {isStreaming ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Square className="h-5 w-5" />
             ) : (
-              <ArrowUpIcon className="h-4 w-4" />
+              <ArrowUpIcon weight="bold" className="h-5 w-5" />
             )}
-            <span className="sr-only">Send</span>
           </InputGroupButton>
         </InputGroupAddon>
-      </InputGroup>
+      </div>
     </div>
   );
 }

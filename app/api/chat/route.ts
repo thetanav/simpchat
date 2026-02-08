@@ -132,7 +132,6 @@ export async function POST(req: Request) {
     system: systemPrompt,
     tools,
     experimental_transform: smoothStream({
-      delayInMs: 20,
       chunking: "word",
     }),
     stopWhen: stepCountIs(20),

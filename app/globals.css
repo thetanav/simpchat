@@ -122,9 +122,6 @@
 @layer base {
   body {
     @apply bg-background text-foreground leading-relaxed;
-    background-image: radial-gradient(var(--border) 1px, transparent 0);
-    background-size: 2rem 2rem;
-    background-position: -1rem -1rem;
   }
 
   /* Smooth transitions for better UX */
@@ -139,7 +136,7 @@
   button:focus-visible,
   input:focus-visible,
   textarea:focus-visible {
-    @apply outline-none ring-0;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
 
   /* Beautiful shimmer animation for thinking state */

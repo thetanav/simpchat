@@ -37,7 +37,7 @@ export const Message = memo(({
         "flex w-full items-end gap-2",
         from === "user"
           ? "is-user justify-end"
-          : "is-assistant flex-row-reverse justify-end"
+          : "is-assistant justify-start"
       )}>
       {props.children}
       {actions && from === "assistant" && actionsVariant === "hover" && (
@@ -51,7 +51,7 @@ export const Message = memo(({
 Message.displayName = "Message";
 
 const messageContentVariants = cva(
-  "is-user:dark flex flex-col gap-2 overflow-hidden text-base prose",
+  "flex flex-col gap-2 overflow-hidden text-base prose",
   {
     variants: {
       variant: {

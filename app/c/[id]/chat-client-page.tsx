@@ -5,7 +5,7 @@ import { useChat, type UIMessage } from "@ai-sdk/react";
 import { toast } from "sonner";
 import { DynamicToolUIPart } from "ai";
 import Image from "next/image";
-import { BoxIcon, GlobeIcon, AlertCircle } from "lucide-react";
+import { BoxIcon, GlobeIcon, AlertCircle, Brain } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Components
@@ -18,7 +18,7 @@ import {
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
-import { Reasoning } from "@/components/ai-elements/reasoning";
+import { Reasoning, ReasoningStatus } from "@/components/ai-elements/reasoning";
 import { Loader } from "@/components/ai-elements/loader";
 import { Tool } from "@/components/ai-elements/tool";
 import Shimmer from "@/components/ai-elements/shimmer";
@@ -91,10 +91,12 @@ function MessagePartRenderer({
       );
 
     case part.type === "reasoning":
+      const { state } = part;
+
       return (
-        <div key={key} className="">
-          <Reasoning isStreaming={isStreaming} defaultOpen={true} />
-        </div>
+        <Reasoning isStreaming={state === "streaming"} duration={state === "streaming" ? 0 : 1}>
+          <ReasoningStatus />
+        </Reasoning>
       );
 
     case part.type === "tool-code_executor":
@@ -377,7 +379,7 @@ export default function ChatClientPage({
   return (
     <div className="flex h-screen w-full border flex-col bg-background">
       {/* Main Chat Area */}
-      <div className="relative mx-auto w-full max-w-3xl flex flex-col flex-1 px-3 sm:px-4 py-0">
+      <div className="relative mx-auto w-full max-w-3xl flex flex-col flex-1">
         {/* Error Alert */}
         {error && (
           <Alert variant="destructive" className="my-2">
@@ -394,12 +396,9 @@ export default function ChatClientPage({
               const searchResults = extractSearchResults(message);
 
               return (
-                <div
-                  key={message.id}
-                  id={`message-${message.id}`}
-                  className="animate-in fade-in-50 duration-300">
+                <div key={message.id} id={`message-${message.id}`}>
                   <Message from={message.role} actionsVariant="hover">
-                    <MessageContent>
+                    <MessageContent variant={message.role === "assistant" ? "flat" : "contained"}>
                       {/* Message Parts */}
                       <div className="space-y-1">
                         {message.parts.map((part, i) => (
@@ -449,7 +448,7 @@ export default function ChatClientPage({
         {/* <ConversationUserLocator messages={messages} /> */}
 
         {/* Input Area */}
-        <div className="sticky bottom-4 left-0 right-0 z-20">
+        <div className="sticky bottom-0 left-0 right-0 z-20">
           {session ? (
             <ChatInput
               handleSubmit={handleSubmit}

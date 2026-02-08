@@ -77,23 +77,14 @@ export default function AIInput({
   const currentModel = models.find((m) => m.value === model);
 
   return (
-    <InputGroup className="bg-card px-4 pt-4 flex-col h-48">
+    <div className="flex flex-col bg-card px-4 pt-4 h-48">
       <InputGroupTextarea
         className="w-full"
         onChange={(e) => setInput(e.target.value)}
         placeholder="Ask, Search or Chat..."
       />
-      <InputGroupButton
-        variant="default"
-        className="rounded-lg cursor-pointer"
-        size="icon-sm"
-        onClick={() => handleSubmit({ text: input }, deepresearch)}
-        disabled={!input.trim() && status !== "streaming"}>
-        <ArrowUpIcon weight="bold" className="h-5 w-5" />
-        <span className="sr-only">Send</span>
-      </InputGroupButton>
 
-      <InputGroupAddon className="w-full flex items-center justify-between py-2">
+      <div className="w-full flex items-center justify-between py-2">
         <InputGroupButton
           variant="outline"
           className="rounded-lg cursor-pointer"
@@ -102,11 +93,10 @@ export default function AIInput({
         </InputGroupButton>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <InputGroupButton variant="ghost" className="cursor-pointer">
-              {" "}
+            <button className="cursor-pointer">
               {currentModel?.name}
               <ChevronDown />
-            </InputGroupButton>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-64">
             {models.map((modelOption) => (
@@ -161,14 +151,14 @@ export default function AIInput({
         </DropdownMenu>
         <InputGroupButton
           variant="default"
-          className="rounded ml-auto"
-          size="icon-xs"
+          className="rounded-lg cursor-pointer"
+          size="icon-sm"
           onClick={() => handleSubmit({ text: input }, deepresearch)}
           disabled={!input.trim() && status !== "streaming"}>
-          <ArrowUpIcon />
+          <ArrowUpIcon weight="bold" className="h-5 w-5" />
           <span className="sr-only">Send</span>
         </InputGroupButton>
-      </InputGroupAddon>
-    </InputGroup>
+      </div>
+    </div>
   );
 }

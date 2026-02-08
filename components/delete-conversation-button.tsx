@@ -14,6 +14,7 @@ function DeleteButtonInner() {
       className="p-1 hover:bg-destructive/10 rounded transition-colors"
       title="Delete conversation"
       disabled={pending}
+      onClick={(e) => e.stopPropagation()}
     >
       {pending ? (
         <Loader2 className="w-4 h-4 text-destructive animate-spin" />
