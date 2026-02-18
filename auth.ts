@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./lib/db";
+import { headers } from "next/headers";
 
 // TODO: Implement Polar integration for payments when ready
 // import { polar, checkout } from "@polar-sh/better-auth";
@@ -39,3 +40,10 @@ export const auth = betterAuth({
   //   }),
   // ],
 });
+
+/** Server-side helper to get the current session. Use in Server Components, API routes, and server actions. */
+export async function getSession() {
+  return auth.api.getSession({
+    headers: await headers(),
+  });
+}

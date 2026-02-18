@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme_provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://simpchat.vercel.app"),
   title: {
     default: "Simp Chat",
-    template: "%s • Simp Chat",
+    template: "%s | Simp Chat",
   },
   description: "Simple AI chat with lots of models and tools.",
   applicationName: "Simp Chat",
@@ -61,8 +61,12 @@ export default function RootLayout({
           <Toaster position="top-right" closeButton />
           <SidebarProvider>
             <AppSidebar />
-            <Navbar />
-            {children}
+            <main className="flex-1 flex flex-col min-h-screen w-full">
+              <Navbar />
+              <div className="flex-1 flex flex-col pt-12">
+                {children}
+              </div>
+            </main>
           </SidebarProvider>
         </ThemeProvider>
       </body>

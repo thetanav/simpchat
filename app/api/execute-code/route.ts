@@ -62,11 +62,12 @@ export async function POST(req: Request) {
       stdout = out;
       stderr = err;
       exitCode = 0; // If execPromise resolves, it means exit code was 0
-    } catch (e: any) {
-      stderr = e.stderr || e.message;
-      stdout = e.stdout || "";
-      exitCode = e.code || 1;
-      error = e.message;
+    } catch (e: unknown) {
+      const execError = e as { stderr?: string; stdout?: string; code?: number; message?: string };
+      stderr = execError.stderr || execError.message || "";
+      stdout = execError.stdout || "";
+      exitCode = execError.code || 1;
+      error = execError.message || "Execution failed";
     }
 
     return NextResponse.json({
@@ -76,11 +77,12 @@ export async function POST(req: Request) {
       error: error || (stderr ? "Execution finished with errors in stderr." : undefined),
       success: !error && !stderr,
     });
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Internal Server Error";
     console.error("Error in code execution API:", e);
     return new NextResponse(
       JSON.stringify({
-        error: e.message || "Internal Server Error",
+        error: message || "Internal Server Error",
         success: false,
       }),
       {

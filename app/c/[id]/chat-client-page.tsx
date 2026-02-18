@@ -5,7 +5,7 @@ import { useChat, type UIMessage } from "@ai-sdk/react";
 import { toast } from "sonner";
 import { DynamicToolUIPart } from "ai";
 import Image from "next/image";
-import { BoxIcon, GlobeIcon, AlertCircle, Brain } from "lucide-react";
+import { BoxIcon, GlobeIcon, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Components
@@ -14,7 +14,6 @@ import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
-  ConversationUserLocator,
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
@@ -83,7 +82,7 @@ function MessagePartRenderer({
       return (
         <div key={key} className="prose prose-sm dark:prose-invert max-w-none">
           <Response
-            className="text-base leading-relaxed"
+            className="text-[15px] leading-relaxed"
             isStreaming={isStreaming}>
             {filePart.text}
           </Response>
@@ -94,7 +93,9 @@ function MessagePartRenderer({
       const { state } = part;
 
       return (
-        <Reasoning isStreaming={state === "streaming"} duration={state === "streaming" ? 0 : 1}>
+        <Reasoning
+          isStreaming={state === "streaming"}
+          duration={state === "streaming" ? 0 : 1}>
           <ReasoningStatus />
         </Reasoning>
       );
@@ -115,7 +116,7 @@ function MessagePartRenderer({
         return (
           <div
             key={key}
-            className="space-y-2 p-3 border rounded-md bg-muted/30">
+            className="space-y-2 p-3 border rounded-lg bg-muted/30">
             <p className="text-sm font-semibold">Code Execution Result:</p>
             {output.stdout && (
               <div>
@@ -151,7 +152,7 @@ function MessagePartRenderer({
         return (
           <div
             key={key}
-            className="space-y-2 p-3 border rounded-md bg-muted/30">
+            className="space-y-2 p-3 border rounded-lg bg-muted/30">
             <p className="text-sm font-semibold">Email Sending Result:</p>
             {output.success ? (
               <p className="text-sm text-green-500">
@@ -217,13 +218,10 @@ function SearchResultsDialog({ results }: { results: SearchResult[] }) {
     <Dialog>
       <DialogTrigger asChild>
         <button
-          className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-foreground transition-all duration-200 opacity-60 hover:opacity-100 rounded-md hover:bg-accent/50"
+          className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-xs font-medium text-muted-foreground transition-all duration-200 hover:text-foreground rounded-md hover:bg-accent/50"
           type="button">
-          <GlobeIcon
-            className="w-3.5 h-3.5 flex-shrink-0"
-            suppressHydrationWarning={true}
-          />
-          <span className="tabular-nums">{results.length}</span>
+          <GlobeIcon className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="tabular-nums">{results.length} sources</span>
         </button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -299,7 +297,7 @@ export default function ChatClientPage({
 
       if (!(hasText || hasAttachments)) return;
 
-      setError(null); // Clear previous errors
+      setError(null);
 
       // Create conversation if needed
       if (!conversationId) {
@@ -377,12 +375,12 @@ export default function ChatClientPage({
   const isStreaming = useMemo(() => status === "streaming", [status]);
 
   return (
-    <div className="flex h-screen w-full border flex-col bg-background">
+    <div className="flex h-screen w-full flex-col bg-background">
       {/* Main Chat Area */}
-      <div className="relative mx-auto w-full max-w-3xl flex flex-col flex-1">
+      <div className="relative mx-auto w-full max-w-3xl flex flex-col flex-1 min-w-0">
         {/* Error Alert */}
         {error && (
-          <Alert variant="destructive" className="my-2">
+          <Alert variant="destructive" className="mx-4 mt-2">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
@@ -390,15 +388,20 @@ export default function ChatClientPage({
 
         {/* Messages Container */}
         <Conversation className="flex-1 w-full">
-          <ConversationContent>
+          <ConversationContent className="pt-16 pb-4">
             {messages.map((message) => {
-              const metadata = message.metadata as MessageMetadata | undefined;
+              const metadata = message.metadata as
+                | MessageMetadata
+                | undefined;
               const searchResults = extractSearchResults(message);
 
               return (
                 <div key={message.id} id={`message-${message.id}`}>
                   <Message from={message.role} actionsVariant="hover">
-                    <MessageContent variant={message.role === "assistant" ? "flat" : "contained"}>
+                    <MessageContent
+                      variant={
+                        message.role === "assistant" ? "flat" : "contained"
+                      }>
                       {/* Message Parts */}
                       <div className="space-y-1">
                         {message.parts.map((part, i) => (
@@ -414,10 +417,10 @@ export default function ChatClientPage({
 
                       {/* Assistant Message Footer */}
                       {message.role === "assistant" && (
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <BoxIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="truncate text-xs font-medium text-muted-foreground">
+                        <div className="flex items-center gap-3 mt-1">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <BoxIcon className="h-3 w-3 text-muted-foreground/60" />
+                            <span className="truncate text-xs text-muted-foreground/60">
                               {metadata?.model}
                             </span>
                           </div>
@@ -444,11 +447,8 @@ export default function ChatClientPage({
           <ConversationScrollButton />
         </Conversation>
 
-        {/* User Locator */}
-        {/* <ConversationUserLocator messages={messages} /> */}
-
         {/* Input Area */}
-        <div className="sticky bottom-0 left-0 right-0 z-20">
+        <div className="sticky bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-background via-background to-transparent pt-4">
           {session ? (
             <ChatInput
               handleSubmit={handleSubmit}
@@ -460,7 +460,7 @@ export default function ChatClientPage({
               stop={stop}
             />
           ) : (
-            <div className="border-t bg-background/80 backdrop-blur-md border-border/50 p-4 text-center">
+            <div className="p-4 text-center">
               <p className="text-sm text-muted-foreground">
                 Please sign in to continue chatting.
               </p>

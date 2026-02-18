@@ -3,11 +3,17 @@ import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { ollama } from "ollama-ai-provider-v2";
 import { google } from "@ai-sdk/google";
 import { groq } from "@ai-sdk/groq";
+import { createSarvam } from "sarvam-ai-provider";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
+const sarvam = createSarvam({
+  headers: {
+    "api-subscription-key": process.env.SARVAM_API_KEY || "",
+  },
+});
 // add local, pro parameter
 export const models = [
   {
@@ -20,6 +26,18 @@ export const models = [
     reasoning: true,
     fast: true,
     end: groq("qwen/qwen3-32b"), // Note: This seems to be a mismatch if provider is openrouter
+  },
+  {
+    name: "Sarvam M",
+    value: "x-ai/grok-4-fast",
+    modelId: "x-ai/grok-4-fast",
+    provider: "sarvam",
+    logo: "/xai.svg",
+    tools: false,
+    pro: false,
+    fast: true,
+    reasoning: false,
+    end: sarvam("saarika:v2"),
   },
   {
     name: "Grok 4 Fast",

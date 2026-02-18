@@ -20,12 +20,12 @@ export const localTools = {
     }),
     execute: async ({ expression }) => {
       try {
-        // Basic security: only allow safe math operations
+        // Safe math evaluation using Function constructor with no global access
         const sanitized = expression.replace(/[^0-9+\-*/().\s]/g, "");
-        const result = eval(sanitized);
+        const result = new Function(`"use strict"; return (${sanitized})`)();
         return {
           expression: sanitized,
-          result: result,
+          result: result as number,
           success: true,
         };
       } catch {
@@ -156,7 +156,8 @@ export const localTools = {
     }),
     execute: async ({ code, language }) => {
       try {
-        const response = await fetch("/api/execute-code", {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const response = await fetch(`${baseUrl}/api/execute-code`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code, language }),
@@ -169,10 +170,10 @@ export const localTools = {
 
         const data = await response.json();
         return data;
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message,
+          error: error instanceof Error ? error.message : "Unknown error",
         };
       }
     },
@@ -186,7 +187,8 @@ export const localTools = {
     }),
     execute: async ({ to, subject, body }) => {
       try {
-        const response = await fetch("/api/send-email", {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const response = await fetch(`${baseUrl}/api/send-email`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ to, subject, body }),
@@ -199,10 +201,10 @@ export const localTools = {
 
         const data = await response.json();
         return data;
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message,
+          error: error instanceof Error ? error.message : "Unknown error",
         };
       }
     },

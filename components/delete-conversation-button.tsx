@@ -2,7 +2,6 @@
 
 import { Trash2Icon, Loader2 } from "lucide-react";
 import { useFormStatus } from "react-dom";
-import { cn } from "@/lib/utils";
 import { deleteConversation } from "@/app/conversations-actions"; // Import the server action
 
 function DeleteButtonInner() {

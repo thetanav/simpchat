@@ -1,19 +1,15 @@
 import { prisma } from "@/lib/db";
 import { UIMessage } from "@ai-sdk/react";
 import ChatClientPage from "./chat-client-page";
-import { auth } from "@/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/auth";
 
 export default async function ChatPage({ params }: { params: { id: string } }) {
   const { id } = await params;
 
   let initialMessages: UIMessage[] = [];
-  let initialTitle: string | undefined;
 
   // Check if the user is authenticated
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (!session?.user && id !== "new") {
     // If not authenticated and trying to access an existing chat,
@@ -28,14 +24,20 @@ export default async function ChatPage({ params }: { params: { id: string } }) {
       });
 
       if (conversation) {
-        initialMessages = (conversation.messages as any[]).map((msg) => ({
+        interface StoredMessage {
+          id: string;
+          createdAt: string;
+          role: UIMessage["role"];
+          content: string;
+          parts: UIMessage["parts"];
+        }
+        initialMessages = (conversation.messages as unknown as StoredMessage[]).map((msg) => ({
           id: msg.id,
           createdAt: new Date(msg.createdAt),
           role: msg.role,
           content: msg.content || "",
           parts: msg.parts || [],
         }));
-        initialTitle = conversation.title;
       }
     } catch (error) {
       console.error("Failed to load conversation:", error);

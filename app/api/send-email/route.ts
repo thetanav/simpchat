@@ -42,11 +42,12 @@ export async function POST(req: Request) {
       success: true,
       message: `Email sent successfully to ${to} with subject "${subject}". (Simulation)`,
     });
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Internal Server Error";
     console.error("Error sending email:", e);
     return new NextResponse(
       JSON.stringify({
-        error: e.message || "Internal Server Error",
+        error: message,
         success: false,
       }),
       {

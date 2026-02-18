@@ -1,14 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { auth } from "@/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/auth";
 import { revalidatePath } from "next/cache";
 
 export async function deleteConversation(conversationId: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (!session?.user?.id) {
     throw new Error("Unauthorized");

@@ -2,17 +2,26 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { PromptInput, PromptInputBody, PromptInputTextarea, PromptInputToolbar, PromptInputSubmit, type PromptInputMessage } from "@/components/ai-elements/prompt-input";
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputTextarea,
+  PromptInputToolbar,
+  PromptInputSubmit,
+  PromptInputTools,
+  PromptInputActionMenuTrigger,
+  type PromptInputMessage,
+} from "@/components/ai-elements/prompt-input";
 import { ChatStatus } from "ai";
-import { BotIcon } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { SparklesIcon } from "lucide-react";
 
-const examplePrompts = [
-    "What is the meaning of life?",
-    "Write a poem about a robot who falls in love with a human.",
-    "What is the best way to learn a new language?",
-]
+const suggestions = [
+  "Explain quantum computing simply",
+  "Write a Python script to analyze data",
+  "Help me plan a trip to Japan",
+  "What are the latest AI breakthroughs?",
+];
 
 export default function HomePage() {
   const router = useRouter();
@@ -24,7 +33,6 @@ export default function HomePage() {
 
     setStatus("submitted");
 
-    // Create a new conversation
     try {
       const title = message.text.slice(0, 50) || "New Chat";
       const res = await fetch("/api/conversations", {
@@ -39,11 +47,9 @@ export default function HomePage() {
       router.push(`/c/${id}`);
     } catch (error) {
       console.error("Error creating conversation:", error);
-      setStatus("error");
+      setStatus("ready");
       const errMsg =
         error instanceof Error ? error.message : "Failed to start conversation";
-      // Removed dummy redirect, now show a toast error
-      // router.push(`/c/${Date.now()}`); 
       toast.error("Failed to start conversation", { description: errMsg });
     }
   };
@@ -53,53 +59,56 @@ export default function HomePage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto pt-0 p-3 relative size-full h-screen">
-      <div className="absolute flex flex-col top-0 left-0 right-0 bottom-0 space-y-8 -z-50 items-center justify-center text-center mb-24 px-4">
-        <div className="relative">
-          <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl scale-150"></div>
-          <BotIcon
-            className="relative w-24 h-24 text-primary drop-shadow-lg"
-            suppressHydrationWarning={true}
-          />
+    <div className="flex flex-col items-center justify-center w-full h-screen">
+      {/* Center content */}
+      <div className="flex-1 flex flex-col items-center justify-center max-w-2xl w-full px-6 pb-8">
+        <div className="flex flex-col items-center gap-3 mb-10">
+          <div className="flex items-center gap-2.5">
+            <SparklesIcon className="w-7 h-7 text-foreground/80" />
+            <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+              What can I help with?
+            </h1>
+          </div>
         </div>
-        <div className="space-y-4">
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent leading-tight">
-            Hello, how can I help you today?
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-md leading-relaxed font-medium">
-            I am Simp, an agentic AI designed to help you with anything you need.
-          </p>
+
+        {/* Input bar */}
+        <div className="w-full max-w-2xl">
+          <PromptInput
+            onSubmit={handleSubmit}
+            className="bg-card border-border/60 shadow-sm hover:shadow-md transition-shadow duration-200">
+            <PromptInputBody>
+              <PromptInputTextarea
+                onChange={(e) => setInput(e.target.value)}
+                value={input}
+                placeholder="Message Simp..."
+                className="min-h-[52px] text-base"
+              />
+            </PromptInputBody>
+            <PromptInputToolbar>
+              <PromptInputTools>
+                <PromptInputActionMenuTrigger />
+              </PromptInputTools>
+              <PromptInputSubmit
+                disabled={!input.trim()}
+                status={status}
+                stop={stop}
+              />
+            </PromptInputToolbar>
+          </PromptInput>
         </div>
-        <div className="flex flex-wrap gap-2 justify-center">
-            {examplePrompts.map((prompt) => (
-                <Button key={prompt} variant="outline" onClick={() => setInput(prompt)}>{prompt}</Button>
-            ))}
+
+        {/* Suggestion chips */}
+        <div className="flex flex-wrap gap-2 justify-center mt-4 max-w-2xl">
+          {suggestions.map((prompt) => (
+            <button
+              key={prompt}
+              onClick={() => setInput(prompt)}
+              className="text-sm px-3.5 py-1.5 rounded-full border border-border/60 text-muted-foreground hover:text-foreground hover:border-border hover:bg-accent/50 transition-all duration-150 cursor-pointer">
+              {prompt}
+            </button>
+          ))}
         </div>
       </div>
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4">
-            <PromptInput
-              onSubmit={handleSubmit}
-              className="border-t bg-background/80 backdrop-blur-md border-border/50 shadow-lg outline-none rounded-full">
-              <PromptInputBody>
-                <PromptInputTextarea
-                  onChange={(e) => setInput(e.target.value)}
-                  value={input}
-                  placeholder="Ask me anything..."
-                  className="min-h-[60px] resize-none border-0 bg-transparent px-6 py-4 text-base focus:ring-0 placeholder:text-muted-foreground/60 outline-none"
-                />
-              </PromptInputBody>
-              <PromptInputToolbar>
-                <div className="flex justify-end px-2">
-                  <PromptInputSubmit
-                    disabled={!input.trim()}
-                    status={status}
-                    stop={stop}
-                    className="h-10 w-10 rounded-full p-0 shadow-lg hover:shadow-xl transition-all duration-200"
-                  />
-                </div>
-              </PromptInputToolbar>
-            </PromptInput>
-          </div>
     </div>
   );
 }

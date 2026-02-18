@@ -1,6 +1,5 @@
-import { auth } from "@/auth";
+import { getSession } from "@/auth";
 import { prisma } from "@/lib/db";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -9,11 +8,9 @@ const UpdateApiKeysSchema = z.object({
   key: z.string(),
 });
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session?.user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -37,9 +34,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session?.user) {
       return new NextResponse("Unauthorized", { status: 401 });

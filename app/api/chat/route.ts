@@ -9,10 +9,12 @@ import {
 import { models } from "@/lib/models";
 import { localTools } from "@/lib/tools";
 import { systemPrompt } from "@/lib/prompt";
-import { auth } from "@/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/auth";
 import { prisma } from "@/lib/db";
 import { nanoid } from "nanoid";
+import { NextResponse } from "next/server";
+
+import { Prisma } from "@/lib/generated/prisma/client";
 
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
@@ -20,7 +22,7 @@ import { createGroq } from "@ai-sdk/groq";
 import { createPerplexity } from "@ai-sdk/perplexity";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 
-export const maxDuration = 5;
+export const maxDuration = 60;
 
 export type ChatTools = typeof localTools;
 
@@ -38,23 +40,18 @@ export async function POST(req: Request) {
   const parsed = RequestBodySchema.safeParse(body);
 
   if (!parsed.success) {
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         error: "Invalid request body",
         details: parsed.error.format(),
-      }),
-      {
-        status: 400,
-        headers: { "content-type": "application/json" },
       },
+      { status: 400 },
     );
   }
 
   const { messages, model, deepresearch, id } = parsed.data;
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   let userApiKeys: Record<string, string> = {};
   if (session?.user?.id) {
@@ -82,6 +79,7 @@ export async function POST(req: Request) {
 
     switch (modelProvider) {
       case "gemini":
+      case "google":
         languageModel = createGoogleGenerativeAI({
           apiKey: userApiKey || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
         })(selectedModelConfig.modelId || selectedModelConfig.value);
@@ -106,21 +104,16 @@ export async function POST(req: Request) {
           apiKey: userApiKey || process.env.OPENROUTER_API_KEY,
         })(selectedModelConfig.modelId || selectedModelConfig.value);
         break;
-      // Add other providers here
       default:
-        languageModel = selectedModelConfig.end as LanguageModel; // Fallback to original if no specific provider handling
+        // For providers like ollama and sarvam that are pre-configured in models.ts
+        languageModel = selectedModelConfig.end as LanguageModel;
     }
   }
 
   if (!languageModel) {
-    return new Response(
-      JSON.stringify({
-        error: `Model configuration not found for: ${model}`,
-      }),
-      {
-        status: 400,
-        headers: { "content-type": "application/json" },
-      },
+    return NextResponse.json(
+      { error: `Model configuration not found for: ${model}` },
+      { status: 400 },
     );
   }
 
@@ -151,11 +144,10 @@ export async function POST(req: Request) {
               parts: Array.isArray(m.content)
                 ? m.content.map((p) => {
                     if (p.type === "tool-call") {
-                      type CustomToolCallPart = typeof p & {
-                        args?: any;
-                        input?: any;
+                      const customP = p as typeof p & {
+                        args?: Record<string, unknown>;
+                        input?: Record<string, unknown>;
                       };
-                      const customP = p as CustomToolCallPart;
                       return {
                         type: "tool-invocation",
                         toolCallId: p.toolCallId,
@@ -172,7 +164,10 @@ export async function POST(req: Request) {
           await prisma.conversations.update({
             where: { id },
             data: {
-              messages: [...(messages as any[]), ...generatedMessages],
+              messages: [
+                ...(messages as Prisma.InputJsonValue[]),
+                ...generatedMessages,
+              ] as Prisma.InputJsonValue,
             },
           });
         } catch (error) {
